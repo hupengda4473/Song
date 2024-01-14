@@ -2,27 +2,21 @@
   <div class="containerPage">
     <div class="gofkMain">
       <div class="detailUl">
-        <div v-for="(i,key) in 3" :key="key" class="detailLi">
+        <div class="detailLi">
           <div class="top">
-            <i class="el-icon-user-solid tx" />
+            <img :src="'http://39.98.182.184/mfs/open/file/download/' + info.representAvatar" alt="">
             <div class="text">
-              <span class="name">李红</span>
-              <span class="phone">13316565656</span>
+              <span class="name">{{ info.representName }}</span>
+              <span class="phone">{{ info.phone }}</span>
             </div>
           </div>
           <div class="detailMain">
             <div class="title">反馈内容</div>
-            <div class="text">
-              fankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhf
-            </div>
+            <div class="text">{{ info.feedback }}</div>
             <div class="imgList">
-              <img src="@/assets/imgs/99.png" alt="">
-              <img src="@/assets/imgs/99.png" alt="">
-              <img src="@/assets/imgs/99.png" alt="">
+              <img :key="index" v-for="(item, index) in info.feedbackImg.split(',')" :src="'http://39.98.182.184/mfs/open/file/download/' + item" alt="">
             </div>
-            <div class="time">
-              反馈时间：2024年1月6日
-            </div>
+            <div class="time">反馈时间：{{ info.createTime }}</div>
           </div>
         </div>
       </div>
@@ -32,14 +26,30 @@
 </template>
 
 <script>
+import { getFeedbackInfo } from '@/api/feedback'
 export default {
   name: 'FkDetail',
+  data() {
+    return {
+      feedbackId: '',
+      info: {}
+    }
+  },
   created() {
-    this.$route.meta.title = this.$route.query.title + '的反馈'
+    // this.$route.meta.title = this.$route.query.title + '的反馈'
+    this.feedbackId = this.$route.query.id
+  },
+  mounted() {
+    this.getFeedbackInfoData()
   },
   methods: {
     jumpMy() {
       this.$router.go(-1)
+    },
+    getFeedbackInfoData() {
+      getFeedbackInfo(this.feedbackId).then(res => {
+        this.info = res.data
+      })
     }
   }
 }
@@ -62,6 +72,7 @@ export default {
         overflow: hidden;
         border-bottom: 1px solid #eeeeee;
         padding-bottom: .4rem;
+        display: flex;
         .tx{
           width: 1.5rem;
           height: 1.5rem;
@@ -122,5 +133,11 @@ export default {
   height: 1.1rem;
   margin: 0.65rem auto 3rem;
   font-size: .38rem;
+}
+img{
+  width: 2.2rem;
+  height: 2.2rem;
+  margin-right: .2rem;
+  border-radius: 12px;
 }
 </style>

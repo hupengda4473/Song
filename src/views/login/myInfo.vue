@@ -2,7 +2,7 @@
   <div class="containerPage">
     <div class="infoTop">
       <i class="el-icon-user-solid tx" />
-      <div class="text">李红</div>
+      <div class="text">{{ userInfo.name }}</div>
     </div>
     <div class="myMain">
       <div class="title">
@@ -10,21 +10,13 @@
         <img src="@/assets/imgs/ss.png" alt="" @click="showClass">
       </div>
       <div class="mainUL">
-        <div class="mainLi">
-          <img src="@/assets/imgs/99.png" alt="">
+        <div v-for="(item, index) in dataList" :key="index" class="mainLi">
+          <img :src="'http://39.98.182.184/mfs/open/file/download/' + item.representAvatar" alt="">
           <div class="mainInfo">
-            <span class="name">孙飞</span>
-            <div class="state active">已回复</div>
+            <span class="name">{{ item.representName }}</span>
+            <div class="state" :class="item.status === 1 ? 'active' : ''">{{ item.status === 1 ? '已回复' : '未回复' }}</div>
           </div>
-          <el-button class="rightBtn" type="danger" @click="showDetail">查看</el-button>
-        </div>
-        <div class="mainLi">
-          <img src="@/assets/imgs/99.png" alt="">
-          <div class="mainInfo">
-            <span class="name">孙飞</span>
-            <div class="state">未回复</div>
-          </div>
-          <el-button class="rightBtn" type="danger">查看</el-button>
+          <el-button class="rightBtn" type="danger" @click="showDetail(item.id)">查看</el-button>
         </div>
       </div>
     </div>
@@ -49,8 +41,8 @@
       :before-close="handleClose"
     >
       <div>
-        <el-radio-group v-model="radio1" size="small">
-          <el-radio-button label="已回复" />
+        <el-radio-group v-model="radio1" size="small" @input="statusChange">
+          <el-radio-button label="已回复"/>
           <el-radio-button label="未回复" />
           <el-radio-button label="全部" />
         </el-radio-group>
@@ -64,14 +56,20 @@
 </template>
 
 <script>
-
+import { getFeedbackList } from '@/api/feedback'
 export default {
   name: 'MyInfo',
   data() {
     return {
-      radio1: '已回复', // EC504A
-      dialogVisible: false
+      radio1: '全部', // EC504A
+      dialogVisible: false,
+      userInfo: {},
+      dataList: []
     }
+  },
+  created() {
+    this.userInfo = JSON.parse(localStorage.getItem('rendafankui_userinfo'))
+    this.getFeedbackListData()
   },
 
   methods: {
@@ -85,8 +83,23 @@ export default {
         })
         .catch(_ => {})*/
     },
-    showDetail() {
-      this.$router.push({ path: '/feedback/fkDetail', query: { title: '李红' }})
+    statusChange() {
+      this.getFeedbackListData()
+    },
+    getFeedbackListData() {
+      let str = ''
+      if (this.radio1 === '已回复') {
+        str = 'status=' + 1
+      }
+      if (this.radio1 === '未回复') {
+        str = 'status=' + 0
+      }
+      getFeedbackList(str).then(res => {
+        this.dataList = res.data.list
+      })
+    },
+    showDetail(id) {
+      this.$router.push({ path: '/feedback/fkDetail', query: { id: id }})
     },
     jumpSY() {
       this.$router.push({ path: '/feedback/login' })

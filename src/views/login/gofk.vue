@@ -1,23 +1,23 @@
 <template>
   <div class="containerPage">
     <div class="gofkMain">
-      <img class="txImg" src="@/assets/imgs/99.png" alt="">
+      <img class="txImg" :src="'http://39.98.182.184/mfs/open/file/download/' + userInfo.avatar" alt="">
       <div class="gofkInfo">
         <el-row :gutter="20" class="gofkInfoLi">
           <el-col class="infoText active" :span="8">姓名：</el-col>
-          <el-col class="infoText" :span="16">孙飞</el-col>
+          <el-col class="infoText" :span="16">{{ userInfo.name }}</el-col>
         </el-row>
         <el-row :gutter="20" class="gofkInfoLi">
           <el-col class="infoText active" :span="8">所属单位：</el-col>
-          <el-col class="infoText" :span="16">孙飞</el-col>
+          <el-col class="infoText" :span="16">{{ userInfo.dept }}</el-col>
         </el-row>
         <el-row :gutter="20" class="gofkInfoLi">
           <el-col class="infoText active" :span="8">代表级别：</el-col>
-          <el-col class="infoText" :span="16">孙飞</el-col>
+          <el-col class="infoText" :span="16">{{ userInfo.level }}</el-col>
         </el-row>
         <el-row :gutter="20" class="gofkInfoLi">
           <el-col class="infoText active" :span="8">联系电话：</el-col>
-          <el-col class="infoText" :span="16">孙飞</el-col>
+          <el-col class="infoText" :span="16">{{ userInfo.phone }}</el-col>
         </el-row>
       </div>
       <el-button class="gofkBtn" type="danger" round @click="jumpReturnFk">向我反馈</el-button>
@@ -29,12 +29,17 @@
 <script>
 export default {
   name: 'Gofk',
+  data() {
+    return {
+      userInfo: {}
+    }
+  },
   created() {
-    this.$route.meta.title = '向代表' + this.$route.query.title + '反馈'
+    this.userInfo = JSON.parse(this.$route.query.data)
   },
   methods: {
     jumpReturnFk() {
-      this.$router.push({ path: '/feedback/returnFk', query: { title: this.$route.query.title }})
+      this.$router.push({ path: '/feedback/returnFk', query: { data: this.$route.query.data }})
     },
     jumpSy() {
       this.$router.go(-1)

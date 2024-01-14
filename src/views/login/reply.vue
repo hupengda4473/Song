@@ -2,33 +2,29 @@
   <div class="containerPage">
     <div class="gofkMain">
       <div class="detailUl">
-        <div v-for="(i,key) in 3" :key="key" class="detailLi">
+        <div v-for="(i,key) in dataList" :key="key" class="detailLi">
           <div class="top">
             <i class="el-icon-user-solid tx" />
             <div class="text">
-              <span class="name">李红</span>
-              <span class="phone">13316565656</span>
-              <span class="goDetail" @click="jumpDetail">详情 ></span>
+              <span class="name">{{ i.representName }}</span>
+              <span class="phone">{{ i.phone }}</span>
+              <span class="goDetail" @click="jumpDetail(i.id)">详情 ></span>
             </div>
           </div>
           <div class="detailMain">
             <div class="title">反馈内容</div>
-            <div class="text">
-              eisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhf
-            </div>
+            <div class="text">{{ i.feedback }}</div>
           </div>
-          <div class="line" />
-          <div class="top">
+          <div class="line" v-if="i.status == 1" />
+          <div class="top" v-if="i.status == 1">
             <i class="el-icon-user-solid tx" />
             <div class="text">
               <span class="name">古亚男</span>
             </div>
           </div>
-          <div class="detailMain">
+          <div class="detailMain" v-if="i.status == 1">
             <div class="title active">回复内容</div>
-            <div class="text">
-              eisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhffankuineisalkjlkahfljksdhf
-            </div>
+            <div class="text">{{ i.reply }}</div>
           </div>
         </div>
       </div>
@@ -52,11 +48,20 @@
 </template>
 
 <script>
+import { getFeedbackList } from '@/api/feedback'
 export default {
   name: 'Reply',
+  data() {
+    return {
+      dataList: []
+    }
+  },
+  mounted() {
+    this.getFeedbackListData()
+  },
   methods: {
-    jumpDetail() {
-      this.$router.push({ path: '/feedback/fkDetail' })
+    jumpDetail(id) {
+      this.$router.push({ path: '/feedback/fkDetail', query: { id: id }})
     },
     jumpSY() {
       this.$router.push({ path: '/feedback/login' })
@@ -66,7 +71,13 @@ export default {
     },
     jumpMy() {
       this.$router.push({ path: '/feedback/myInfo', query: { name: '11', age: '11' }})
-    }
+    },
+    getFeedbackListData() {
+      getFeedbackList('').then(res => {
+        console.log(res)
+        this.dataList = res.data.list
+      })
+    },
   }
 }
 </script>
