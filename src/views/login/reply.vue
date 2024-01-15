@@ -4,7 +4,7 @@
       <div class="detailUl">
         <div v-for="(i,key) in dataList" :key="key" class="detailLi">
           <div class="top">
-            <i class="el-icon-user-solid tx" />
+            <img class="txImg" :src="'http://39.98.182.184/mfs/open/file/download/' + i.representAvatar" alt="">
             <div class="text">
               <span class="name">{{ i.representName }}</span>
               <span class="phone">{{ i.phone }}</span>
@@ -15,14 +15,14 @@
             <div class="title">反馈内容</div>
             <div class="text">{{ i.feedback }}</div>
           </div>
-          <div class="line" v-if="i.status == 1" />
-          <div class="top" v-if="i.status == 1">
+          <div v-if="i.status == 1" class="line" />
+          <div v-if="i.status == 1" class="top">
             <i class="el-icon-user-solid tx" />
             <div class="text">
               <span class="name">古亚男</span>
             </div>
           </div>
-          <div class="detailMain" v-if="i.status == 1">
+          <div v-if="i.status == 1" class="detailMain">
             <div class="title active">回复内容</div>
             <div class="text">{{ i.reply }}</div>
           </div>
@@ -77,7 +77,7 @@ export default {
         console.log(res)
         this.dataList = res.data.list
       })
-    },
+    }
   }
 }
 </script>
@@ -96,7 +96,7 @@ export default {
     margin-bottom: .3rem;
     .top{
       overflow: hidden;
-
+      display: flex;
       padding-bottom: .4rem;
       .tx{
         width: 1.5rem;
@@ -165,5 +165,12 @@ export default {
       }
     }
   }
+}
+.txImg {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 8px;
+  display: block;
+  margin: 0.5rem auto;
 }
 </style>

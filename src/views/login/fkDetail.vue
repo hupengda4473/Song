@@ -1,5 +1,5 @@
 <template>
-  <div class="containerPage">
+  <div ref="containerPageRef" class="containerPage">
     <div class="gofkMain">
       <div class="detailUl">
         <div class="detailLi">
@@ -14,7 +14,20 @@
             <div class="title">反馈内容</div>
             <div class="text">{{ info.feedback }}</div>
             <div class="imgList">
-              <img :key="index" v-for="(item, index) in info.feedbackImg.split(',')" :src="'http://39.98.182.184/mfs/open/file/download/' + item" alt="">
+              <el-image
+                v-for="(item, index) in info.feedbackImg.split(',')"
+                :key="index"
+                style="width: 100px; height: 100px"
+                :src="'http://39.98.182.184/mfs/open/file/download/' + item"
+                :preview-src-list="getSrcList( info.feedbackImg)"
+              />
+            </div>
+            <div class="imgList">
+              <Video
+                v-for="(item, index) in info.feedbackMp4.split(',')"
+                :key="index"
+                :src="'http://39.98.182.184/mfs/open/file/download/' + item"
+              />
             </div>
             <div class="time">反馈时间：{{ info.createTime }}</div>
           </div>
@@ -27,8 +40,12 @@
 
 <script>
 import { getFeedbackInfo } from '@/api/feedback'
+import Video from './components/Video'
 export default {
   name: 'FkDetail',
+  components: {
+    Video
+  },
   data() {
     return {
       feedbackId: '',
@@ -50,6 +67,16 @@ export default {
       getFeedbackInfo(this.feedbackId).then(res => {
         this.info = res.data
       })
+    },
+    getSrcList(data) {
+      const arr = data.split(',')
+      const imgArr = []
+      if (arr && arr.length > 0) {
+        for (const item of arr) {
+          imgArr.push('http://39.98.182.184/mfs/open/file/download/' + item)
+        }
+      }
+      return imgArr
     }
   }
 }
